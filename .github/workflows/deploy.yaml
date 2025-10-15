@@ -1,0 +1,84 @@
+name: Deployment workflow
+
+on: 
+  workflow_dispatch:
+    
+jobs:
+  terraform_deployment:
+    name: Terraform Deployment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Terraform
+        run: |
+          # Ensure that the system is up to date and gnupg in installed
+          sudo apt-get update 
+          sudo apt-get install -y gnupg software-properties-common curl
+
+          # Install HashiCorp's GPG key
+          curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+
+          # Add the official HashiCorp repository
+          echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] \
+          https://apt.releases.hashicorp.com $(lsb_release -cs) main" | \
+          sudo tee /etc/apt/sources.list.d/hashicorp.list
+
+          # Update apt and install Terraform
+          sudo apt-get update
+          sudo apt-get install terraform
+
+          # Verify installation
+          terraform -version
+
+      - name: Install Terraform Linting Tool (tflint)
+        run: |
+          # Update system packages
+          sudo apt-get update 
+          sudo apt-get install -y curl unzip
+
+          # Download latest TFLint release
+          curl -s https://api.github.com/repos/terraform-linters/tflint/releases/latest \
+          | grep "browser_download_url.*linux_amd64.zip" \
+          | cut -d '"' -f 4 \
+          | wget -i -
+
+          # Unzip the binary
+          unzip tflint_linux_amd64.zip
+
+          # Move the binary to a system path
+          sudo mv tflint /usr/local/bin/
+
+          # Verify installation
+          tflint --version
+
+      - name: Install Terraform Security Tool (tfsec)
+        run: |
+          # Update packages and install dependencies
+          sudo apt update 
+          sudo apt install -y wget unzip
+
+          # Download the latest tfsec release
+          wget https://github.com/aquasecurity/tfsec/releases/latest/download/tfsec-linux-amd64
+
+          # Make the binary executable
+          chmod +x tfsec-linux-amd64
+
+          # Move it to PATH
+          sudo mv tfsec-linux-amd64 /usr/local/bin/tfsec
+
+          # Verify installation
+          tfsec --version
+
+      - name: Checkout the terraform code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0            # full history
+          ref: ${{ github.ref }}    # ensure correct branch/PR ref
+      
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      
