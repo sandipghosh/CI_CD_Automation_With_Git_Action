@@ -24,7 +24,7 @@ jobs:
       - name: Install Terraform Linting Tool (tflint)
         run: |
           # Update system packages
-          sudo apt-get update TF_VERSION
+          sudo apt-get update
           sudo apt-get install -y curl unzip
 
           # Download latest TFLint release
