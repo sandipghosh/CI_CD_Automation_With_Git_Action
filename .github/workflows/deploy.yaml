@@ -99,8 +99,8 @@ jobs:
 
       - name: Plan the terraform infrastructure
         run: |
-          terraform plan -out=infra.tfplan
+          terraform plan -out=infra-deploy.tfplan
 
       - name: Apply the terraform infrastructure
         run: |
-          terraform apply -auto-approve "infra.tfplan"
+          terraform apply -auto-approve "infra-deploy.tfplan"
