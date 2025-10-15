@@ -81,4 +81,23 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      
+      - name: Terraform Initializing
+        run: |
+          terraform init
+
+      - name: Linting Terraform code
+        run: |
+          tflint --init
+          tflint --recursive
+
+      - name: Security Check to the Terraform code
+        run: |
+          tfsec . --format sarif --out tfsec.sarif
+
+      - name: Plan the terraform infrastructure
+        run: |
+          terraform plan -out=infra.tfplan
+
+      - name: Apply the terraform infrastructure
+        run: |
+          terraform apply -auto-approve "infra.tfplan"
