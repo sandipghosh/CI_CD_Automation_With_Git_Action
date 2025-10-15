@@ -6,4 +6,11 @@ terraform {
       version = "6.15.0"
     }
   }
+
+  backend "s3" {
+    bucket = "terraform-remote-state-sandip-new"
+    key    = "git-action/terraform.tfstate"
+    region = "ap-south-1"
+  }
 }
+
