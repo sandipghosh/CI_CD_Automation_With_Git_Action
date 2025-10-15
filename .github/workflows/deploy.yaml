@@ -92,7 +92,8 @@ jobs:
 
       - name: Security Check to the Terraform code
         run: |
-          tfsec . --format sarif --out tfsec.sarif
+          tfsec . 
+          #--format sarif --out tfsec.sarif
 
       - name: Plan the terraform infrastructure
         run: |
