@@ -17,7 +17,7 @@ resource "aws_instance" "simple_ec2_instance" {
   }
 
   tags = {
-    Name = "ec2 instance for linting"
+    Name = "ec2 instance created througt automation"
   }
 }
 
