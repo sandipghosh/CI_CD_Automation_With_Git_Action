@@ -11,6 +11,7 @@ terraform {
     bucket = "terraform-remote-state-sandip-new"
     key    = "git-action/terraform.tfstate"
     region = "ap-south-1"
+    encrypt = true
   }
 }
 
