@@ -5,8 +5,8 @@ on:
   workflow_dispatch:
     
 jobs:
-  terraform_deployment:
-    name: Terraform Deployment
+  terraform_cleanup:
+    name: Terraform Cleanup
     runs-on: ubuntu-latest
     env:
       TF_VERSION: "1.1.7"
